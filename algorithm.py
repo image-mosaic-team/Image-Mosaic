@@ -63,6 +63,45 @@ class Stitcher:
     
 # ----------------------------------------------------------------------------------------------
 
+# ---- TODO：需要修改 -----
+'''
+删除多余黑色部分
+2023.11.29 9:15 第二次修改，修改为使用二值化后找框来分界
+'''
+def delete_black(im):
+    img = im.copy()
+    img2 = im.copy()
+    im = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)
+    # Read the image in grayscale
+
+    thresh, im = cv2.threshold(im, 1, 255, cv2.THRESH_BINARY)
+
+    contours, hierarchy = cv2.findContours(im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(img, contours, -1, (0,255,0), 2)
+
+    max_x = -np.inf
+
+    for contour in contours:
+
+        x, y, w, h = cv2.boundingRect(contour)
+        
+
+        if x + w > max_x:
+            max_x = x + w
+
+    # print('最右上角的横坐标是：', max_x)
+    max_x -= 10
+
+    result = img2[:, :max_x]
+
+    return result
+
+
+
+
+
+
+
 if __name__ == "__main__":
     # load img and algp_para
     path='algo_para.json'
@@ -75,32 +114,11 @@ if __name__ == "__main__":
 
 
     imageA = cv2.imread("test_img/16.png")
-    x, y, c = imageA.shape  # TODO：需要修改
     imageB = cv2.imread("test_img/26.png")
-    imageB = cv2.resize(imageB, (y, x))
+
+    # x, y, c = imageA.shape  # TODO：需要修改 （好像又不需要修改了）
+    # imageB = cv2.resize(imageB, (y, x))
  
-    # ---- TODO：需要修改 -----
-    def delete_black(img):
-        # 获取图像的高度和宽度
-        h, w = img.shape[:2]
-
-        # 定义一个掩码，初始值为0
-        mask = np.zeros((h,w), np.uint8)
-
-        # 设置掩码右边的一部分为255
-        mask[:,int(w*0.8):] = 255
-
-        # 使用掩码，将图像右边的黑色部分设置为白色
-        img[mask == 255] = 255
-        out = img[:, :find_board(mask[0])]
-        return out
-
-    def find_board(mask):
-        for i in range(len(mask)):
-            if mask[i] != 0:
-                return i
-        return len(mask)
-
     # --------------------------------------
 
     # start stitcher
@@ -116,8 +134,6 @@ if __name__ == "__main__":
     cv2.imwrite("img_tmp/result.jpg", result)
     change_result = delete_black(result)
     cv2.imwrite("img_tmp/result_delete_black.jpg", change_result)
-
-
     # cv2.imwrite("vis", vis)
 
 
