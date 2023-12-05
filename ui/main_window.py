@@ -10,7 +10,7 @@ import cv2
 # from testui import Ui_Dialog
 from algorithm import Stitcher
 import numpy as np
-
+from PyQt5.QtGui import QPixmap
 class Ui_MainWindow(object):
     # def __init__(self):
 
@@ -168,66 +168,58 @@ class Ui_MainWindow(object):
         self.more_window.start()
 
     def revole_1_ButtonClicked(self):
-        pixmap = self.lable1.pixmap()
-        if pixmap:
-            # 将QPixmap转换为OpenCV格式
-            image = pixmap.toImage()
-            ptr = image.bits()
-            ptr.setsize(image.byteCount())
-            arr = np.array(ptr).reshape(image.height(), image.width(), 4)  # Copies the data
-            img = cv2.cvtColor(arr, cv2.COLOR_RGBA2BGR)
+        try:
+            img = cv2.imread("img_tmp/image1.jpg")
+            print("1:", img.shape)
+            # print(img)
+            if img is not None:
+                print(2)
+                # 使用OpenCV进行旋转
+                trance_img = cv2.transpose(img)
+                print(3)
+                rotated = cv2.flip(trance_img,0)
+                print("4",rotated.shape)
+                # 保存旋转后的图片
+                cv2.imwrite("img_tmp/image1.jpg", rotated)
+                print(5)
+        except Exception as e:
+            print(e)
 
-            # 使用OpenCV进行旋转
-            (h, w) = img.shape[:2]
-            center = (w / 2, h / 2)
-            M = cv2.getRotationMatrix2D(center, 90, 1.0)
-            rotated = cv2.warpAffine(img, M, (w, h))
+        # 加载图片
+        pixmap = QPixmap(r'img_tmp/image1.jpg')
+        # 将图片缩放到标签的大小，并保持图片的比例
+        pixmap = pixmap.scaled(self.lable1.width(), self.lable1.height(), QtCore.Qt.KeepAspectRatio)
+        # 在标签上显示图片
+        self.lable1.setPixmap(pixmap)
 
-            # 将旋转后的OpenCV图像转换回QPixmap
-            rotated_pixmap = QtGui.QPixmap.fromImage(
-                QtGui.QImage(rotated.data, rotated.shape[1], rotated.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped())
-            self.lable1.setPixmap(rotated_pixmap)
 
-            # 保存旋转后的图片
-            save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
 
-            file_name = "image1.jpg"  # 保存文件的名称
-            save_path = os.path.join(save_dir, file_name)
-            cv2.imwrite(save_path, rotated)
-        # pushButton_5 按钮的槽函数
-        #
-        # pixmap = self.lable1.pixmap()
-        # if pixmap:
-        #     rotated_pixmap = pixmap.transformed(QtGui.QTransform().rotate(90))
-        #     print(rotated_pixmap)
-        #     self.lable1.setPixmap(rotated_pixmap)
-        #
-        #     # 保存旋转后的图片
-        #     save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
-        #     if not os.path.exists(save_dir):
-        #         os.makedirs(save_dir)
-        #
-        #     file_name = "image1.jpg"  # 保存文件的名称
-        #     save_path = os.path.join(save_dir, file_name)
-        #     rotated_pixmap.save(save_path)
 
     def revole_2_ButtonClicked(self):
 
-        pixmap = self.label_2.pixmap()
-        if pixmap:
-            rotated_pixmap = pixmap.transformed(QtGui.QTransform().rotate(90))
-            self.label_2.setPixmap(rotated_pixmap)
+        try:
+            img = cv2.imread("img_tmp/image2.jpg")
+            print("1:", img.shape)
+            # print(img)
+            if img is not None:
+                print(2)
+                # 使用OpenCV进行旋转
+                trance_img = cv2.transpose(img)
+                print(3)
+                rotated = cv2.flip(trance_img,0)
+                print("4",rotated.shape)
+                # 保存旋转后的图片
+                cv2.imwrite("img_tmp/image2.jpg", rotated)
+                print(5)
+        except Exception as e:
+            print(e)
 
-            # 保存旋转后的图片
-            save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-
-            file_name = "image2.jpg"  # 保存文件的名称
-            save_path = os.path.join(save_dir, file_name)
-            rotated_pixmap.save(save_path)
+        # 加载图片
+        pixmap = QPixmap(r'img_tmp/image2.jpg')
+        # 将图片缩放到标签的大小，并保持图片的比例
+        pixmap = pixmap.scaled(self.label_2.width(), self.label_2.height(), QtCore.Qt.KeepAspectRatio)
+        # 在标签上显示图片
+        self.label_2.setPixmap(pixmap)
 
 
 
