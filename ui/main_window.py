@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-# @Author : Jiahao Zeng
+# @Author : ltx
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 import os
-# from more import more_Window
+from ui.more import more_Window
+import cv2
 # from testui import Ui_Dialog
 from algorithm import Stitcher
-
+import numpy as np
 
 class Ui_MainWindow(object):
     # def __init__(self):
@@ -79,7 +80,7 @@ class Ui_MainWindow(object):
         # 为按钮添加槽函数
         self.pushButton.clicked.connect(self.upload1ButtonClicked)
         self.pushButton_2.clicked.connect(self.upload2ButtonClicked)
-        self.pushButton_3.clicked.connect(self._startButtonClicked)
+        self.pushButton_3.clicked.connect(self.startButtonClicked)
         self.pushButton_4.clicked.connect(self.cleanupButtonClicked)
         self.pushButton_5.clicked.connect(self.moreButtonClicked)
         self.pushButton_6.clicked.connect(self.revole_1_ButtonClicked)
@@ -91,7 +92,7 @@ class Ui_MainWindow(object):
         options |= QFileDialog.DontUseNativeDialog
         file, _ = QFileDialog.getOpenFileName(None, "select imageL:", "", "Images (*.png *.xpm *.jpg *.jpeg)", options=options)
         if file:
-            save_dir = "image_save"  # 自定义文件夹路径
+            save_dir = "img_tmp"  # 自定义文件夹路径
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
@@ -108,7 +109,7 @@ class Ui_MainWindow(object):
         options |= QFileDialog.DontUseNativeDialog
         file, _ = QFileDialog.getOpenFileName(None, "选择图片", "", "Images (*.png *.xpm *.jpg *.jpeg)", options=options)
         if file:
-            save_dir = "image_save"  # 自定义文件夹路径
+            save_dir = "img_tmp/"  # 自定义文件夹路径
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
@@ -120,9 +121,42 @@ class Ui_MainWindow(object):
             self.label_2.setPixmap(scaled_pixmap)
 
 
-    def _startButtonClicked(self):
-        # pushButton_3 按钮的槽函数
-        print("1")
+    def startButtonClicked(self):
+        print("-------------------------------")
+
+        try:
+            imageA = cv2.imread(r"img_tmp/image1.jpg")
+            imageB = cv2.imread(r"img_tmp/image2.jpg")
+            print("SHAPE:", imageA.shape, imageB.shape)
+        except:
+            print("没有图片")
+            return
+
+        try:
+            stitcher = Stitcher()
+            (result, vis) = stitcher.stitch([imageA, imageB],
+                                        showMatches=True)
+        except Exception as e:
+            print("合成失败", e)
+            return
+
+
+        try:
+            if result is not None:
+                stitcher.cut_handle()  # 裁剪
+            else:
+                print("result 是None")
+                return
+        except:
+            print("裁剪失败")
+
+
+        try:
+            cv2.imwrite(r"E:\git_test\Image-Mosaic\ui\image_result\result.jpg", result)
+        except:
+            print("result保存失败")
+
+
 
     def cleanupButtonClicked(self):
         # pushButton_4 按钮的槽函数
@@ -134,29 +168,60 @@ class Ui_MainWindow(object):
         self.more_window.start()
 
     def revole_1_ButtonClicked(self):
-        # pushButton_5 按钮的槽函数
         pixmap = self.lable1.pixmap()
         if pixmap:
-            rotated_pixmap = pixmap.transformed(QtGui.QTransform().rotate(90))
+            # 将QPixmap转换为OpenCV格式
+            image = pixmap.toImage()
+            ptr = image.bits()
+            ptr.setsize(image.byteCount())
+            arr = np.array(ptr).reshape(image.height(), image.width(), 4)  # Copies the data
+            img = cv2.cvtColor(arr, cv2.COLOR_RGBA2BGR)
+
+            # 使用OpenCV进行旋转
+            (h, w) = img.shape[:2]
+            center = (w / 2, h / 2)
+            M = cv2.getRotationMatrix2D(center, 90, 1.0)
+            rotated = cv2.warpAffine(img, M, (w, h))
+
+            # 将旋转后的OpenCV图像转换回QPixmap
+            rotated_pixmap = QtGui.QPixmap.fromImage(
+                QtGui.QImage(rotated.data, rotated.shape[1], rotated.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped())
             self.lable1.setPixmap(rotated_pixmap)
 
             # 保存旋转后的图片
-            save_dir = "image_save"  # 替换为你想保存图像的文件夹路径
+            save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
             file_name = "image1.jpg"  # 保存文件的名称
             save_path = os.path.join(save_dir, file_name)
-            rotated_pixmap.save(save_path)
+            cv2.imwrite(save_path, rotated)
+        # pushButton_5 按钮的槽函数
+        #
+        # pixmap = self.lable1.pixmap()
+        # if pixmap:
+        #     rotated_pixmap = pixmap.transformed(QtGui.QTransform().rotate(90))
+        #     print(rotated_pixmap)
+        #     self.lable1.setPixmap(rotated_pixmap)
+        #
+        #     # 保存旋转后的图片
+        #     save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
+        #     if not os.path.exists(save_dir):
+        #         os.makedirs(save_dir)
+        #
+        #     file_name = "image1.jpg"  # 保存文件的名称
+        #     save_path = os.path.join(save_dir, file_name)
+        #     rotated_pixmap.save(save_path)
 
     def revole_2_ButtonClicked(self):
+
         pixmap = self.label_2.pixmap()
         if pixmap:
             rotated_pixmap = pixmap.transformed(QtGui.QTransform().rotate(90))
             self.label_2.setPixmap(rotated_pixmap)
 
             # 保存旋转后的图片
-            save_dir = "image_save"  # 替换为你想保存图像的文件夹路径
+            save_dir = "img_tmp"  # 替换为你想保存图像的文件夹路径
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
@@ -169,10 +234,10 @@ class Ui_MainWindow(object):
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    MainWindow = QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+app = QApplication(sys.argv)
+MainWindow = QMainWindow()
+ui = Ui_MainWindow()
+ui.setupUi(MainWindow)
+MainWindow.show()
+sys.exit(app.exec_())
