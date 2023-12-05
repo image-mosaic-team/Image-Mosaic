@@ -139,7 +139,7 @@ class Stitcher:
         鼠标点击函数，根据框出的矩形进行最后结果的保存
         """
         result_copy = self.result.copy()
-        
+
         if event == cv2.EVENT_LBUTTONDOWN:  #左键点击
             self.point1 = (x,y)
             cv2.circle(result_copy, self.point1, 10, (0,255,0), 5)
@@ -151,14 +151,26 @@ class Stitcher:
 
         elif event == cv2.EVENT_LBUTTONUP:  #左键释放
             self.point2 = (x,y)
-            cv2.rectangle(result_copy, self.point1, self.point2, (0,0,255), 5) 
+            cv2.rectangle(result_copy, self.point1, self.point2, (0,0,255), 5)
             cv2.imshow('crop', result_copy)
-            min_x = min(self.point1[0],self.point2[0])     
+            min_x = min(self.point1[0],self.point2[0])
             min_y = min(self.point1[1],self.point2[1])
             width = abs(self.point1[0] - self.point2[0])
             height = abs(self.point1[1] -self.point2[1])
             self.cut_img = self.result[min_y:min_y+height, min_x:min_x+width]
-            cv2.imwrite('img_tmp/result_crop.jpg', self.cut_img)
+
+            """
+            23/12/2 修改，不清楚什么时候会进入Exception
+            """
+            try:
+                if len(self.cut_img) > 0:
+                    cv2.imwrite('img_tmp/result_crop.jpg', self.cut_img)
+                    print("保存成功")
+                else:
+                    print("重新绘制")
+            except Exception as e:
+                print(self.cut_img)
+                print("def on mouse in algorithm.py line 168 error:", e)
 
     def cut_handle(self):
         """
@@ -175,8 +187,8 @@ class Stitcher:
 if __name__ == "__main__":
 
     # TODO:修改固定地址
-    imageA = cv2.imread("test_img/16.png")
-    imageB = cv2.imread("test_img/26.png")
+    imageA = cv2.imread("test_img/image1.jpg")
+    imageB = cv2.imread("test_img/image2.jpg")
 
     # TODO：考虑需不需要统一大小
     # x, y, c = imageA.shape  
@@ -192,8 +204,11 @@ if __name__ == "__main__":
     stitcher.cut_handle()  # 裁剪
     
     # save TODO:修改固定地址
-    cv2.imwrite("img_tmp/result.jpg", result)
-    cv2.imwrite("img_tmp/result_crop.jpg", stitcher.cut_img)
+    # try:
+    #     cv2.imwrite("img_tmp/result.jpg", result)
+    #     cv2.imwrite("img_tmp/result_crop.jpg", stitcher.cut_img)
+    # except:
+    #     print("保存失败")
     # cv2.imwrite("vis", vis)
 
 
