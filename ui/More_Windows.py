@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from ParaSitting import ParaSitting
 from Production_Personnel import Production_Personnel
 import sys
+import json
 
 class More_Windows(object):
     def MW_setupUi(self, MainWindow):

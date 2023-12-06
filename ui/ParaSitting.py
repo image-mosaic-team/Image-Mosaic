@@ -4,6 +4,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
+import json
 
 
 class ParaSitting(object):
@@ -107,22 +108,22 @@ class ParaSitting(object):
         self.label.setText(_translate("MainWindow", "Ratio"))
         self.label_2.setText(_translate("MainWindow", "Reprojthresh"))
         self.label_3.setText(_translate("MainWindow", "Homography_matrix"))
-        self.textEdit.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'SimSun\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p></body></html>"))
-        self.textEdit_2.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'SimSun\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p></body></html>"))
-        self.textEdit_3.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'SimSun\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;\"><br /></p></body></html>"))
 
+        # json文件读取
+        f = open('algo_para.json','r')
+        content = f.read()
+        a = json.loads(content)
+        f.close()
+
+
+        self.textEdit.setPlainText(str(a["ratio"]))
+        self.textEdit_2.setPlainText(str(a["reprojThresh"]))
+        self.textEdit_3.setPlainText(str(a["Homography_matrix"]))
+        # self.textEdit.setHtml('')
+        # self.textEdit_2.setHtml('')
+        # self.textEdit_3.setHtml('')
+        self.PushButton.clicked.connect(self.JSButtonClicked)
+        self.pushButton_2.clicked.connect(self.EXButtonClicked)
 
     def start(self):
         self.MainWindow = QMainWindow()
@@ -131,4 +132,23 @@ class ParaSitting(object):
         self.MainWindow.show()
 
             
- 
+    def JSButtonClicked(self):
+        k_1 = self.textEdit.toPlainText()
+        k_2 = self.textEdit_2.toPlainText()
+        k_3 = self.textEdit_3.toPlainText()
+        dic = dict()
+        for i in ("ratio","reprojThresh","Homography_matrix"):
+            if i == "ratio":
+                dic[i] = k_1
+            elif i == "reprojThresh":
+                dic[i] = k_2
+            else:
+                dic[i] = k_3
+        b = json.dumps(dic)
+        f2 = open('algo_para.json','w')
+        f2.write(b)
+        f2.close()
+
+
+    def EXButtonClicked(self):
+        self.MainWindow.close()
