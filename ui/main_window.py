@@ -5,12 +5,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 import os
-from ui.more import more_Window
+import More_Windows
 import cv2
 # from testui import Ui_Dialog
 from algorithm import Stitcher
 import numpy as np
 from PyQt5.QtGui import QPixmap
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
+
+
 class Ui_MainWindow(object):
     # def __init__(self):
 
@@ -122,14 +127,12 @@ class Ui_MainWindow(object):
 
 
     def startButtonClicked(self):
-        print("-------------------------------")
-
         try:
             imageA = cv2.imread(r"img_tmp/image1.jpg")
             imageB = cv2.imread(r"img_tmp/image2.jpg")
             print("SHAPE:", imageA.shape, imageB.shape)
-        except:
-            print("没有图片")
+        except Exception as e:
+            print("startButtonClicked without load image error:", e)
             return
 
         try:
@@ -137,24 +140,20 @@ class Ui_MainWindow(object):
             (result, vis) = stitcher.stitch([imageA, imageB],
                                         showMatches=True)
         except Exception as e:
-            print("合成失败", e)
+            print("stitch failed, i dont know why, and the error:", e)
             return
 
 
-        try:
-            if result is not None:
-                stitcher.cut_handle()  # 裁剪
-            else:
-                print("result 是None")
-                return
-        except:
-            print("裁剪失败")
-
+        if result is not None:
+            stitcher.cut_handle()  # 裁剪
+        else:
+            print("stitch result is None, cant crop")
+            return
 
         try:
             cv2.imwrite(r"E:\git_test\Image-Mosaic\ui\image_result\result.jpg", result)
-        except:
-            print("result保存失败")
+        except Exception as e:
+            print("save failed, the error :", e, "look by yourself")
 
 
 
@@ -164,26 +163,23 @@ class Ui_MainWindow(object):
         self.label_2.clear()
 
     def moreButtonClicked(self):
-        self.more_window = more_Window()  # 使用self.more_window来保存more_Window的实例
+        self.more_window = More_Windows()  # 使用self.more_window来保存more_Window的实例
         self.more_window.start()
 
     def revole_1_ButtonClicked(self):
         try:
             img = cv2.imread("img_tmp/image1.jpg")
-            print("1:", img.shape)
-            # print(img)
             if img is not None:
-                print(2)
+
                 # 使用OpenCV进行旋转
                 trance_img = cv2.transpose(img)
-                print(3)
                 rotated = cv2.flip(trance_img,0)
-                print("4",rotated.shape)
+
                 # 保存旋转后的图片
                 cv2.imwrite("img_tmp/image1.jpg", rotated)
-                print(5)
+
         except Exception as e:
-            print(e)
+            print("revole_1_ButtonClicked error:", e)
 
         # 加载图片
         pixmap = QPixmap(r'img_tmp/image1.jpg')
@@ -199,20 +195,16 @@ class Ui_MainWindow(object):
 
         try:
             img = cv2.imread("img_tmp/image2.jpg")
-            print("1:", img.shape)
-            # print(img)
+
             if img is not None:
-                print(2)
                 # 使用OpenCV进行旋转
                 trance_img = cv2.transpose(img)
-                print(3)
                 rotated = cv2.flip(trance_img,0)
-                print("4",rotated.shape)
+
                 # 保存旋转后的图片
                 cv2.imwrite("img_tmp/image2.jpg", rotated)
-                print(5)
         except Exception as e:
-            print(e)
+            print("revole_2_ButtonClicked error:", e)
 
         # 加载图片
         pixmap = QPixmap(r'img_tmp/image2.jpg')
@@ -223,10 +215,6 @@ class Ui_MainWindow(object):
 
 
 
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
-
-# if __name__ == '__main__':
 app = QApplication(sys.argv)
 MainWindow = QMainWindow()
 ui = Ui_MainWindow()
