@@ -5,7 +5,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 import os
-from ui.more import more_Window
+import More_Windows
 import cv2
 # from testui import Ui_Dialog
 from algorithm import Stitcher
@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
         self.label_2.clear()
 
     def moreButtonClicked(self):
-        self.more_window = more_Window()  # 使用self.more_window来保存more_Window的实例
+        self.more_window = More_Windows()  # 使用self.more_window来保存more_Window的实例
         self.more_window.start()
 
     def revole_1_ButtonClicked(self):
