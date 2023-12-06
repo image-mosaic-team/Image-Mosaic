@@ -11,16 +11,13 @@ import numpy as no
     当alpha=1时，图像保持不变；当alpha<1时，对比度降低；当alpha>1时，对比度提高
 '''
 
-def modify_constract(img, alpha, beta=1):
-
-    adjusted = cv2.convertScaleAbs(img, alpha, beta)
-    return adjusted
-
+def modify_constract(image, alpha):
+    return cv2.convertScaleAbs(image, alpha=alpha, beta=0)
 
 if __name__ == "__main__":
-    img = cv2.imread('test_img/16.png')
-    alpha = 4
+    img = cv2.imread('/home/zjh/codeSpace/python/Image-Mosaic/Image-Mosaic/test_img/image1.jpg')
+    alpha = 3
 
     result = modify_constract(img, alpha)
 
-    cv2.imwrite("test_img/modify_constract.png", result)
+    cv2.imwrite("/home/zjh/codeSpace/python/Image-Mosaic/Image-Mosaic/test_img/modify_constract.png", result)
