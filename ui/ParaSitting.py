@@ -93,9 +93,9 @@ class ParaSitting(object):
         self.textEdit_3.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textEdit_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.textEdit_3.setObjectName("textEdit_3")
-        MainWindow.setStatusBar(self.statusbar)
+        # MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        # self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def PS_retranslateUi(self, MainWindow):
@@ -128,4 +128,6 @@ class ParaSitting(object):
         self.PS_setupUi(self.MainWindow)
         self.PS_retranslateUi(self.MainWindow)
         self.MainWindow.show()
+
             
+ 

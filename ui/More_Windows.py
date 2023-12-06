@@ -1,7 +1,8 @@
 # @Author : fxl
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
-import ParaSitting
+from ParaSitting import ParaSitting
+import sys
 
 class More_Windows(object):
     def MW_setupUi(self, MainWindow):
@@ -25,12 +26,12 @@ class More_Windows(object):
         font.setPointSize(11)
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
-        MainWindow.setStatusBar(self.statusbar)
+        # MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        # self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         # 在这里添加一个字段来保存more_window的实例
-        self.more_window = None
+        # self.more_window = None
     
 
     def MW_retranslateUi(self, MainWindow):
@@ -46,12 +47,21 @@ class More_Windows(object):
     
 
     def start(self):
-        self.MainWindow = QMainWindow()
-        self.MW_setupUi(self.MainWindow)
-        self.MW_retranslateUi(self.MainWindow)
-        self.MainWindow.show()
+        app = QtWidgets.QApplication(sys.argv)
+        MainWindow = QMainWindow()
+        ui = More_Windows()
+        ui.MW_setupUi(MainWindow)
+        ui.MW_retranslateUi(MainWindow)
+        MainWindow.show()
+        sys.exit(app.exec_())            
+        # self.MainWindow = QMainWindow()
+        # self.MW_setupUi(self.MainWindow)
+        # self.MW_retranslateUi(self.MainWindow)
+        # self.MainWindow.show()
 
     def PSsitButtonClicked(self):
         self.more_window = ParaSitting()
         self.more_window.start()
 
+m = More_Windows()
+m.start()   
