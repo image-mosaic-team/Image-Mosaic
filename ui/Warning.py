@@ -1,19 +1,22 @@
 # @Author : fxl
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import sys
 
 class Warning(object):
-    def Warning_setupUi(self, Dialog):
+    def Warning_setupUi(self, MainWindow):
         # 设置对话框的对象名和大小
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(620, 265)
+        MainWindow.setObjectName("Dialog")
+        MainWindow.resize(620, 265)
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
-        Dialog.setFont(font)
+        MainWindow.setFont(font)
         # 创建一个标签并设置其位置和大小
-        self.label = QtWidgets.QLabel(Dialog)
+        self.label = QtWidgets.QLabel(MainWindow)
         self.label.setGeometry(QtCore.QRect(270, 50, 271, 141))
         font = QtGui.QFont()
         font.setFamily("Algerian")
@@ -31,23 +34,25 @@ class Warning(object):
         self.label.setIndent(41)
         self.label.setObjectName("label")
         # 创建另一个标签并设置其位置和大小
-        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2 = QtWidgets.QLabel(MainWindow)
         self.label_2.setGeometry(QtCore.QRect(70, 50, 161, 161))
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
-        '''
+        self.label_2.setPixmap(QPixmap('R-C.jpg'))
 
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        这里有一个三角形图像要插入进去
-
-        
-        '''
-
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def Warning_retranslateUi(self, Dialog):
+    def Warning_retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         # 设置对话框的标题
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         # 设置标签的文本内容
-        self.label.setText(_translate("Dialog", "失    败"))
+        self.label.setText(_translate("MainWindow", "失    败"))
+
+app = QtWidgets.QApplication(sys.argv)
+MainWindow = QMainWindow()
+ui = Warning()
+ui.Warning_setupUi(MainWindow)
+ui.Warning_retranslateUi(MainWindow)
+MainWindow.show()
+sys.exit(app.exec_()) 
