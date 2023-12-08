@@ -129,14 +129,14 @@ class result_ui(QWidget):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # 加载图片
-        pixmap = QPixmap(r'E:\git_test\Image-Mosaic\img_tmp\result_crop.jpg')
+        pixmap = QPixmap(r'img_tmp\result_crop.jpg')
         # 将图片缩放到标签的大小，并保持图片的比例
         pixmap = pixmap.scaled(self.label.width(), self.label.height(), QtCore.Qt.KeepAspectRatio)
         # 在标签上显示图片
         self.label.setPixmap(pixmap)
 
         self.label.setAlignment(Qt.AlignCenter)
-        self.image_modify = cv2.imread(r"E:\git_test\Image-Mosaic\img_tmp\result_crop.jpg")
+        self.image_modify = cv2.imread(r"img_tmp\result_crop.jpg")
 
 
         self.image_modify_prosess = np.copy( self.image_modify)
