@@ -4,10 +4,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import  QFileDialog, QMessageBox
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtCore import Qt
-from ui_tools.Brightness import modify_brightness
-from ui_tools.Contrast import modify_constract
-from ui_tools.Exposure import modify_exposure
-from ui_tools.Saturation import modify_saturation
+
+from ui_tools.enhance import enhance
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
 import numpy as np
 import sys
@@ -65,7 +64,7 @@ class result_ui(QWidget):
         self.horizontalSlider_2.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider_2.setTickPosition(QtWidgets.QSlider.TicksBelow)
         # self.horizontalSlider_2.setTickInterval(20)
-        self.horizontalSlider_2.setRange(0, 30)
+        self.horizontalSlider_2.setRange(1, 20)
         self.horizontalSlider_2.setSingleStep(1)
         self.horizontalSlider_2.setValue(10)  # 设置滑动条的初始值为10
         self.horizontalSlider_2.setObjectName("horizontalSlider_2")
@@ -77,8 +76,9 @@ class result_ui(QWidget):
         self.horizontalSlider_3.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider_3.setTickPosition(QtWidgets.QSlider.TicksBelow)
         # self.horizontalSlider_3.setTickInterval(20)
-        self.horizontalSlider_3.setRange(1, 100)
+        self.horizontalSlider_3.setRange(1, 20)
         self.horizontalSlider_3.setSingleStep(1)
+        self.horizontalSlider_3.setValue(10)  # 设置滑动条的初始值为10
         self.horizontalSlider_3.setObjectName("horizontalSlider_3")
         self.horizontalSlider_3.valueChanged.connect(self.on_value_changed_exposure)
 
@@ -86,8 +86,9 @@ class result_ui(QWidget):
         self.horizontalSlider_4.setGeometry(QtCore.QRect(280, 720, 441, 22))
         self.horizontalSlider_4.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider_4.setTickPosition(QtWidgets.QSlider.TicksBelow)
-        self.horizontalSlider_4.setRange(1, 100)
+        self.horizontalSlider_4.setRange(1, 20)
         self.horizontalSlider_4.setSingleStep(1)
+        self.horizontalSlider_4.setValue(10)  # 设置滑动条的初始值为10
         self.horizontalSlider_4.setObjectName("horizontalSlider_4")
         self.horizontalSlider_4.valueChanged.connect(self.on_value_changed_saturation)
 
@@ -129,44 +130,41 @@ class result_ui(QWidget):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # 加载图片
-        pixmap = QPixmap(r'E:\git_test\Image-Mosaic\img_tmp\result_crop.jpg')
+        pixmap = QPixmap(r'img_tmp\result_crop.jpg')
         # 将图片缩放到标签的大小，并保持图片的比例
         pixmap = pixmap.scaled(self.label.width(), self.label.height(), QtCore.Qt.KeepAspectRatio)
         # 在标签上显示图片
         self.label.setPixmap(pixmap)
 
         self.label.setAlignment(Qt.AlignCenter)
-        self.image_modify = cv2.imread(r"E:\git_test\Image-Mosaic\img_tmp\result_crop.jpg")
+        self.image_modify = cv2.imread(r"img_tmp\result_crop.jpg")
 
 
-        self.image_modify_prosess = np.copy( self.image_modify)
-
-        print(self.image_modify_prosess[100][100])
-
-        self.num = 0
-        # self.img2 = None
+        self.image_modify_prosess = np.copy(self.image_modify)
 
         self.value_brightness = 0
-        self.value_constract = 0
-        self.value_exposure = 0
-        self.value_saturation = 0
+        self.value_constract = 1
+        self.value_exposure = 1
+        self.value_saturation = 1
 
 
     def on_value_changed_brightness(self, value):
-        print("value",value)
-        print("before_value", self.value_brightness)
-        value_now = value - self.value_brightness
+        print("brightness before:", value)
 
-        print("now_value", value_now)
-        self.image_modify_prosess = modify_brightness(self.image_modify_prosess, value_now)
-
-        self.value_brightness = value_now
-        print(1)
+        self.value_brightness = value
+        
+        self.image_modify_prosess = enhance(self.image_modify,
+                                    self.value_brightness,
+                                    self.value_constract,
+                                    self.value_exposure,
+                                    self.value_saturation
+                                    )
+        
+        
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
-        print(2)
+    
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
                               QtGui.QImage.Format_RGB888)  # pyqt5转换成自己能放的图片格式
-        print(3)
         jpg_out = QtGui.QPixmap(_image).scaled(self.label.width(), self.label.height(),QtCore.Qt.KeepAspectRatio)  # 设置图片大小
 
         self.label.setPixmap(jpg_out)  # 设置图片显示
@@ -177,19 +175,18 @@ class result_ui(QWidget):
 
     def on_value_changed_constract(self,value):
 
+        print("constract before:", value / 10)
 
-        value = value/10
-
-
-        value_now = value - self.value_constract
-
-        self.image_modify_prosess = modify_constract(self.image_modify_prosess, alpha=value_now)
-
-        self.value_constract = value
-
+        self.value_constract = value / 10
+        
+        self.image_modify_prosess = enhance(self.image_modify,        
+                                    self.value_brightness,
+                                    self.value_constract,
+                                    self.value_exposure,
+                                    self.value_saturation
+                                    )
 
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
-
 
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
                               QtGui.QImage.Format_RGB888)  # pyqt5转换成自己能放的图片格式
@@ -202,15 +199,16 @@ class result_ui(QWidget):
 
 
     def on_value_changed_exposure(self,value):
+        print("exposure before:", value / 10)
 
-
-        value = value/10
-
-        value_now = value - self.value_exposure
-
-        self.image_modify_prosess = modify_exposure(self.image_modify_prosess, value_now)
-        self.value_exposure = value
-
+        self.value_exposure = value / 10
+        
+        self.image_modify_prosess = enhance(self.image_modify,        
+                                    self.value_brightness,
+                                    self.value_constract,
+                                    self.value_exposure,
+                                    self.value_saturation
+                                    )
 
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
 
@@ -226,15 +224,17 @@ class result_ui(QWidget):
 
 
     def on_value_changed_saturation(self,value):
+        
+        print("saturation before:", value / 10)
 
-
-        value = value / 10
-        value_now = value - self.value_saturation
-
-
-        self.image_modify_prosess = modify_saturation(self.image_modify_prosess, value_now)
-        self.value_saturation = value
-
+        self.value_saturation= value / 10
+        
+        self.image_modify_prosess = enhance(self.image_modify,        
+                                    self.value_brightness,
+                                    self.value_constract,
+                                    self.value_exposure,
+                                    self.value_saturation
+                                    )
 
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
 
@@ -260,12 +260,12 @@ class result_ui(QWidget):
         self.label_5.setText(_translate("MainWindow", "saturation"))
         self.label_6.setText(_translate("MainWindow", "-100"))
         self.label_7.setText(_translate("MainWindow", "100"))
-        self.label_8.setText(_translate("MainWindow", "0"))
-        self.label_9.setText(_translate("MainWindow", "3"))
+        self.label_8.setText(_translate("MainWindow", "0.1"))
+        self.label_9.setText(_translate("MainWindow", "2"))
         self.label_10.setText(_translate("MainWindow", "0.1"))
-        self.label_11.setText(_translate("MainWindow", "10"))
+        self.label_11.setText(_translate("MainWindow", "2"))
         self.label_12.setText(_translate("MainWindow", "0.1"))
-        self.label_13.setText(_translate("MainWindow", "10"))
+        self.label_13.setText(_translate("MainWindow", "2"))
 
         # 为按钮添加槽函数
         self.pushButton.clicked.connect(self.SAVEButtonClicked)
