@@ -40,6 +40,9 @@ class Warning(object):
         self.label_2.setObjectName("label_2")
         self.label_2.setPixmap(QPixmap('R-C.jpg'))
 
+        self.label_2.setStyleSheet("border: 2px solid blue")
+        self.label_2.setScaledContents(True)
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def Warning_retranslateUi(self, MainWindow):
