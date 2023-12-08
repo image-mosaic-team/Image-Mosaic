@@ -5,3 +5,7 @@ test_img
 __pycache__
 
 img_tmp
+
+.idea
+
+algo_para.json

@@ -10,9 +10,12 @@ from ui_tools.Exposure import modify_exposure
 from ui_tools.Saturation import modify_saturation
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
 import numpy as np
+import sys
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow
 import cv2
 
-class result_ui(object):
+class result_ui(QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(980, 840)
@@ -134,17 +137,36 @@ class result_ui(object):
 
         self.label.setAlignment(Qt.AlignCenter)
         self.image_modify = cv2.imread(r"E:\git_test\Image-Mosaic\img_tmp\result_crop.jpg")
+
+
         self.image_modify_prosess = np.copy( self.image_modify)
+
+        print(self.image_modify_prosess[100][100])
+
+        self.num = 0
+        # self.img2 = None
+
+        self.value_brightness = 0
+        self.value_constract = 0
+        self.value_exposure = 0
+        self.value_saturation = 0
 
 
     def on_value_changed_brightness(self, value):
-        self.image_modify_prosess = modify_brightness(self.image_modify, value)
+        print("value",value)
+        print("before_value", self.value_brightness)
+        value_now = value - self.value_brightness
 
+        print("now_value", value_now)
+        self.image_modify_prosess = modify_brightness(self.image_modify_prosess, value_now)
+
+        self.value_brightness = value_now
+        print(1)
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
-
+        print(2)
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
                               QtGui.QImage.Format_RGB888)  # pyqt5转换成自己能放的图片格式
-
+        print(3)
         jpg_out = QtGui.QPixmap(_image).scaled(self.label.width(), self.label.height(),QtCore.Qt.KeepAspectRatio)  # 设置图片大小
 
         self.label.setPixmap(jpg_out)  # 设置图片显示
@@ -152,11 +174,22 @@ class result_ui(object):
 
 
 
+
     def on_value_changed_constract(self,value):
+
+
         value = value/10
-        self.image_modify_prosess = modify_constract(self.image_modify, alpha=value)
+
+
+        value_now = value - self.value_constract
+
+        self.image_modify_prosess = modify_constract(self.image_modify_prosess, alpha=value_now)
+
+        self.value_constract = value
+
 
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
+
 
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
                               QtGui.QImage.Format_RGB888)  # pyqt5转换成自己能放的图片格式
@@ -166,10 +199,19 @@ class result_ui(object):
 
         self.label.setPixmap(jpg_out)  # 设置图片显示
         self.label.setAlignment(Qt.AlignCenter)
+
 
     def on_value_changed_exposure(self,value):
+
+
         value = value/10
-        self.image_modify_prosess = modify_exposure(self.image_modify, value)
+
+        value_now = value - self.value_exposure
+
+        self.image_modify_prosess = modify_exposure(self.image_modify_prosess, value_now)
+        self.value_exposure = value
+
+
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
 
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
@@ -180,12 +222,20 @@ class result_ui(object):
 
         self.label.setPixmap(jpg_out)  # 设置图片显示
         self.label.setAlignment(Qt.AlignCenter)
+
 
 
     def on_value_changed_saturation(self,value):
-        value = value / 10
 
-        self.image_modify_prosess = modify_saturation(self.image_modify, value)
+
+        value = value / 10
+        value_now = value - self.value_saturation
+
+
+        self.image_modify_prosess = modify_saturation(self.image_modify_prosess, value_now)
+        self.value_saturation = value
+
+
         img2 = cv2.cvtColor(self.image_modify_prosess, cv2.COLOR_BGR2RGB)  # opencv读取的bgr格式图片转换成rgb格式
 
         _image = QtGui.QImage(img2[:], img2.shape[1], img2.shape[0], img2.shape[1] * 3,
@@ -222,29 +272,33 @@ class result_ui(object):
         self.pushButton_2.clicked.connect(self.EXITButtonClicked)
 
 
-
-
-
     def SAVEButtonClicked(self):
         # pushButton_2 按钮的槽函数
         options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        folder_path = QFileDialog.getExistingDirectory(None, "选择文件夹", "", options=options)
-        image_save = folder_path + '/result.jpg'
-        cv2.imwrite(image_save, self.image_modify_prosess)
+        # 打开保存文件对话框，让用户输入文件名
+        image_save, _ = QFileDialog.getSaveFileName(None, "保存图片", "",
+                                                    "所有文件 (*);;文本文件 (*.txt);;图片文件 (*.png *.jpg *.bmp)",
+                                                    options=options)
+
+        # 如果用户选择了文件路径，则保存图片
+        if image_save:
+            cv2.imwrite(image_save, self.image_modify_prosess)
+
 
     def EXITButtonClicked(self):
-        QApplication.instance().quit()
+        self.MainWindow.close()
 
 
+    def start(self):
+        self.MainWindow = QMainWindow()  # 使用self.MainWindow来保存QMainWindow的实例
+        self.setupUi(self.MainWindow)
+        self.MainWindow.show()
 
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    MainWindow = QMainWindow()
-    ui = result_ui()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     app = QApplication(sys.argv)
+#     MainWindow = QMainWindow()
+#     ui = result_ui()
+#     ui.setupUi(MainWindow)
+#     MainWindow.show()
+#     sys.exit(app.exec_())

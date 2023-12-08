@@ -5,15 +5,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 import os
-import More_Windows
 import cv2
-# from testui import Ui_Dialog
-from algorithm import Stitcher
-import numpy as np
 from PyQt5.QtGui import QPixmap
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
+
+from ui.More_Windows import More_Windows
+from ui.result_ui import result_ui
+from algorithm import Stitcher
 
 
 class Ui_MainWindow(object):
@@ -68,6 +68,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.more_window = None  # 在这里添加一个字段来保存more_Window的实例
+        self.result_window = None
 
 
     def retranslateUi(self, MainWindow):
@@ -151,11 +152,12 @@ class Ui_MainWindow(object):
             return
 
         try:
-            cv2.imwrite(r"E:\git_test\Image-Mosaic\ui\image_result\result.jpg", result)
+            cv2.imwrite(r"img_tmp\result.jpg", result)
         except Exception as e:
             print("save failed, the error :", e, "look by yourself")
 
-
+        self.result_window = result_ui()  # 使用self.more_window来保存more_Window的实例
+        self.result_window.start()
 
     def cleanupButtonClicked(self):
         # pushButton_4 按钮的槽函数
@@ -164,6 +166,7 @@ class Ui_MainWindow(object):
 
     def moreButtonClicked(self):
         self.more_window = More_Windows()  # 使用self.more_window来保存more_Window的实例
+
         self.more_window.start()
 
     def revole_1_ButtonClicked(self):
