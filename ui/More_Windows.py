@@ -3,7 +3,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from ParaSitting import ParaSitting
+from Production_Personnel import Production_Personnel
 import sys
+import json
 
 class More_Windows(object):
     def MW_setupUi(self, MainWindow):
@@ -44,7 +46,7 @@ class More_Windows(object):
         self.label_2.setText(_translate("MainWindow", "源码地址："))
         # 为按钮添加槽函数
         self.pushButton.clicked.connect(self.PSsitButtonClicked)
-        # self.pushButton_2.clicked.connect(self.)
+        self.pushButton_2.clicked.connect(self.PPButtonClicked)
     
 
     def start(self):
@@ -60,9 +62,16 @@ class More_Windows(object):
         # self.MW_retranslateUi(self.MainWindow)
         # self.MainWindow.show()
 
+
     def PSsitButtonClicked(self):
         self.more_window = ParaSitting()
         self.more_window.start()
+
+
+    def PPButtonClicked(self):
+        self.more_window = Production_Personnel()
+        self.more_window.start()
+
 
 m = More_Windows()
 m.start()   
