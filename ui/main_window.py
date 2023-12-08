@@ -102,13 +102,11 @@ class Ui_MainWindow(object):
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
-            file_name = os.path.basename(file)
-            save_path = os.path.join(save_dir, file_name)
+            save_path = os.path.join(save_dir, 'image1.jpg')
             pixmap = QtGui.QPixmap(file)
             pixmap.save(save_path)
             scaled_pixmap = pixmap.scaled(self.lable1.size(), QtCore.Qt.KeepAspectRatio)
             self.lable1.setPixmap(scaled_pixmap)
-
     def upload2ButtonClicked(self):
         # pushButton_2 按钮的槽函数
         options = QFileDialog.Options()
@@ -119,12 +117,11 @@ class Ui_MainWindow(object):
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
 
-            file_name = os.path.basename(file)
-            save_path = os.path.join(save_dir, file_name)
+            save_path = os.path.join(save_dir, 'image2.jpg')
             pixmap = QtGui.QPixmap(file)
             pixmap.save(save_path)
-            scaled_pixmap = pixmap.scaled(self.label_2.size(), QtCore.Qt.KeepAspectRatio)
-            self.label_2.setPixmap(scaled_pixmap)
+            scaled_pixmap = pixmap.scaled(self.lable1.size(), QtCore.Qt.KeepAspectRatio)
+            self.lable1.setPixmap(scaled_pixmap)
 
 
     def startButtonClicked(self):
