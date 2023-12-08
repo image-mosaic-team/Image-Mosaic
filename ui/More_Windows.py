@@ -2,10 +2,9 @@
 # @Author : fxl
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
-from ParaSitting import ParaSitting
-from Production_Personnel import Production_Personnel
-import sys
-import json
+
+from ui.ParaSitting import ParaSitting
+from ui.Production_Personnel import Production_Personnel
 
 class More_Windows(object):
     def MW_setupUi(self, MainWindow):
@@ -50,17 +49,17 @@ class More_Windows(object):
     
 
     def start(self):
-        app = QtWidgets.QApplication(sys.argv)
-        MainWindow = QMainWindow()
-        ui = More_Windows()
-        ui.MW_setupUi(MainWindow)
-        ui.MW_retranslateUi(MainWindow)
-        MainWindow.show()
-        sys.exit(app.exec_())            
-        # self.MainWindow = QMainWindow()
-        # self.MW_setupUi(self.MainWindow)
-        # self.MW_retranslateUi(self.MainWindow)
-        # self.MainWindow.show()
+        # app = QtWidgets.QApplication(sys.argv)
+        # MainWindow = QMainWindow()
+        # ui = More_Windows()
+        # ui.MW_setupUi(MainWindow)
+        # ui.MW_retranslateUi(MainWindow)
+        # MainWindow.show()
+        # sys.exit(app.exec_())
+        self.MainWindow = QMainWindow()
+        self.MW_setupUi(self.MainWindow)
+        self.MW_retranslateUi(self.MainWindow)
+        self.MainWindow.show()
 
 
     def PSsitButtonClicked(self):
@@ -73,5 +72,5 @@ class More_Windows(object):
         self.more_window.start()
 
 
-m = More_Windows()
-m.start()   
+# m = More_Windows()
+# m.start()

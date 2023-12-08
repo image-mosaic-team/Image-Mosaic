@@ -165,12 +165,12 @@ class Stitcher:
             try:
                 if len(self.cut_img) > 0:
                     cv2.imwrite('img_tmp/result_crop.jpg', self.cut_img)
-                    print("保存成功")
+                    print("save successful")
                 else:
-                    print("重新绘制")
+                    print("redraw")
             except Exception as e:
                 print(self.cut_img)
-                print("def on mouse in algorithm.py line 168 error:", e)
+                print("def on_mouse in algorithm.py error:", e)
 
     def cut_handle(self):
         """

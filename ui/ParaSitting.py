@@ -139,11 +139,11 @@ class ParaSitting(object):
         dic = dict()
         for i in ("ratio","reprojThresh","Homography_matrix"):
             if i == "ratio":
-                dic[i] = k_1
+                dic[i] = float(k_1)
             elif i == "reprojThresh":
-                dic[i] = k_2
+                dic[i] = float(k_2)
             else:
-                dic[i] = k_3
+                dic[i] = float(k_3)
         b = json.dumps(dic)
         f2 = open('algo_para.json','w')
         f2.write(b)
