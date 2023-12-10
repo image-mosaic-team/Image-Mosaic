@@ -120,8 +120,8 @@ class Ui_MainWindow(object):
             save_path = os.path.join(save_dir, 'image2.jpg')
             pixmap = QtGui.QPixmap(file)
             pixmap.save(save_path)
-            scaled_pixmap = pixmap.scaled(self.lable1.size(), QtCore.Qt.KeepAspectRatio)
-            self.lable1.setPixmap(scaled_pixmap)
+            scaled_pixmap = pixmap.scaled(self.label_2.size(), QtCore.Qt.KeepAspectRatio)
+            self.label_2.setPixmap(scaled_pixmap)
 
 
     def startButtonClicked(self):

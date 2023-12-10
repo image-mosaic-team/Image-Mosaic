@@ -1,5 +1,7 @@
 ui/__pycache__
 
+ui_tools/__pycache__
+
 test_img
 
 __pycache__
@@ -9,3 +11,5 @@ img_tmp
 .idea
 
 algo_para.json
+
+.vscode
