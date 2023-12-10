@@ -1,7 +1,7 @@
 # @Author : fxl
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import sys
@@ -38,7 +38,7 @@ class Warning(object):
         self.label_2.setGeometry(QtCore.QRect(70, 50, 161, 161))
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
-        self.label_2.setPixmap(QPixmap('R-C.jpg'))
+        self.label_2.setPixmap(QPixmap('ui/R-C.jpg'))
 
         self.label_2.setStyleSheet("border: 2px solid blue")
         self.label_2.setScaledContents(True)
@@ -52,10 +52,16 @@ class Warning(object):
         # 设置标签的文本内容
         self.label.setText(_translate("MainWindow", "失    败"))
 
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = QMainWindow()
-ui = Warning()
-ui.Warning_setupUi(MainWindow)
-ui.Warning_retranslateUi(MainWindow)
-MainWindow.show()
-sys.exit(app.exec_()) 
+    def start(self):
+        self.MainWindow = QMainWindow()
+        self.Warning_setupUi(self.MainWindow)
+        self.Warning_retranslateUi(self.MainWindow)
+        self.MainWindow.show()
+
+# app = QtWidgets.QApplication(sys.argv)
+# MainWindow = QMainWindow()
+# ui = Warning()
+# ui.Warning_setupUi(MainWindow)
+# ui.Warning_retranslateUi(MainWindow)
+# MainWindow.show()
+# sys.exit(app.exec_())

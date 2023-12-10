@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 import json
-
+from ui.Warning import Warning
 # achieve stitcher
 class Stitcher:
     """
@@ -41,6 +41,7 @@ class Stitcher:
 
         self.result = None
         self.cut_img = None
+        self.warning_window = None
 
     def stitch(self, images, showMatches=False):
         '''
@@ -167,8 +168,12 @@ class Stitcher:
                     cv2.imwrite('img_tmp/result_crop.jpg', self.cut_img)
                     print("save successful")
                 else:
+                    self.warning_window = Warning()
+                    self.warning_window.start()
                     print("redraw")
             except Exception as e:
+                self.warning_window = Warning()
+                self.warning_window.start()
                 print(self.cut_img)
                 print("def on_mouse in algorithm.py error:", e)
 

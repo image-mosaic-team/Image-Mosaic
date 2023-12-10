@@ -68,7 +68,7 @@ class ParaSitting(object):
         self.textEdit.setFrameShadow(QtWidgets.QFrame.Raised)
         self.textEdit.setObjectName("textEdit")
         self.frame_2 = QtWidgets.QFrame(MainWindow)
-        self.frame_2.setGeometry(QtCore.QRect(200, 160, 131, 81))
+        self.frame_2.setGeometry(QtCore.QRect(200, 150, 131, 81))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Plain)

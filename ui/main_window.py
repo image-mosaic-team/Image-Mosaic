@@ -14,30 +14,30 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from ui.More_Windows import More_Windows
 from ui.result_ui import result_ui
 from algorithm import Stitcher
-
+from ui.Warning import Warning
 
 class Ui_MainWindow(object):
     # def __init__(self):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1062, 850)
+        MainWindow.resize(1062, 700)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(110, 630, 93, 28))
         self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(770, 640, 93, 28))
+        self.pushButton_2.setGeometry(QtCore.QRect(750, 630, 93, 28))
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(470, 280, 93, 28))
+        self.pushButton_3.setGeometry(QtCore.QRect(480, 280, 93, 28))
         self.pushButton_3.setObjectName("pushButton_3")
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(470, 370, 93, 28))
+        self.pushButton_4.setGeometry(QtCore.QRect(480, 370, 93, 28))
         self.pushButton_4.setObjectName("pushButton_4")
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_5.setGeometry(QtCore.QRect(470, 460, 93, 28))
+        self.pushButton_5.setGeometry(QtCore.QRect(480, 460, 93, 28))
         self.pushButton_5.setObjectName("pushButton_5")
         self.lable1 = QtWidgets.QLabel(self.centralwidget)
         self.lable1.setGeometry(QtCore.QRect(10, 40, 441, 571))
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setGeometry(QtCore.QRect(230, 630, 93, 28))
         self.pushButton_6.setObjectName("pushButton_6")
         self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_8.setGeometry(QtCore.QRect(890, 640, 93, 28))
+        self.pushButton_8.setGeometry(QtCore.QRect(870, 630, 93, 28))
         self.pushButton_8.setObjectName("pushButton_8")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -69,6 +69,7 @@ class Ui_MainWindow(object):
 
         self.more_window = None  # 在这里添加一个字段来保存more_Window的实例
         self.result_window = None
+        self.warning_window = None
 
 
     def retranslateUi(self, MainWindow):
@@ -79,8 +80,8 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "start"))
         self.pushButton_4.setText(_translate("MainWindow", "clean up"))
         self.pushButton_5.setText(_translate("MainWindow", "more"))
-        self.lable1.setText(_translate("MainWindow", "image1"))
-        self.label_2.setText(_translate("MainWindow", "image2"))
+        self.lable1.setText(_translate("MainWindow", ""))
+        self.label_2.setText(_translate("MainWindow", ""))
         self.pushButton_6.setText(_translate("MainWindow", "revole"))
         self.pushButton_8.setText(_translate("MainWindow", "revole"))
         # 为按钮添加槽函数
@@ -130,6 +131,8 @@ class Ui_MainWindow(object):
             imageB = cv2.imread(r"img_tmp/image2.jpg")
             print("SHAPE:", imageA.shape, imageB.shape)
         except Exception as e:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("startButtonClicked without load image error:", e)
             return
 
@@ -138,6 +141,8 @@ class Ui_MainWindow(object):
             (result, vis) = stitcher.stitch([imageA, imageB],
                                         showMatches=True)
         except Exception as e:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("stitch failed, i dont know why, and the error:", e)
             return
 
@@ -145,12 +150,16 @@ class Ui_MainWindow(object):
         if result is not None:
             stitcher.cut_handle()  # 裁剪
         else:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("stitch result is None, cant crop")
             return
 
         try:
             cv2.imwrite(r"img_tmp\result.jpg", result)
         except Exception as e:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("save failed, the error :", e, "look by yourself")
 
         self.result_window = result_ui()  # 使用self.more_window来保存more_Window的实例
@@ -169,25 +178,26 @@ class Ui_MainWindow(object):
     def revole_1_ButtonClicked(self):
         try:
             img = cv2.imread("img_tmp/image1.jpg")
-            if img is not None:
 
-                # 使用OpenCV进行旋转
-                trance_img = cv2.transpose(img)
-                rotated = cv2.flip(trance_img,0)
 
-                # 保存旋转后的图片
-                cv2.imwrite("img_tmp/image1.jpg", rotated)
+            # 使用OpenCV进行旋转
+            trance_img = cv2.transpose(img)
+            rotated = cv2.flip(trance_img,0)
+
+            # 保存旋转后的图片
+            cv2.imwrite("img_tmp/image1.jpg", rotated)
+
+            # 加载图片
+            pixmap = QPixmap(r'img_tmp/image1.jpg')
+            # 将图片缩放到标签的大小，并保持图片的比例
+            pixmap = pixmap.scaled(self.lable1.width(), self.lable1.height(), QtCore.Qt.KeepAspectRatio)
+            # 在标签上显示图片
+            self.lable1.setPixmap(pixmap)
 
         except Exception as e:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("revole_1_ButtonClicked error:", e)
-
-        # 加载图片
-        pixmap = QPixmap(r'img_tmp/image1.jpg')
-        # 将图片缩放到标签的大小，并保持图片的比例
-        pixmap = pixmap.scaled(self.lable1.width(), self.lable1.height(), QtCore.Qt.KeepAspectRatio)
-        # 在标签上显示图片
-        self.lable1.setPixmap(pixmap)
-
 
 
 
@@ -196,22 +206,26 @@ class Ui_MainWindow(object):
         try:
             img = cv2.imread("img_tmp/image2.jpg")
 
-            if img is not None:
-                # 使用OpenCV进行旋转
-                trance_img = cv2.transpose(img)
-                rotated = cv2.flip(trance_img,0)
+            # 使用OpenCV进行旋转
+            trance_img = cv2.transpose(img)
+            rotated = cv2.flip(trance_img,0)
 
-                # 保存旋转后的图片
-                cv2.imwrite("img_tmp/image2.jpg", rotated)
+            # 保存旋转后的图片
+            cv2.imwrite("img_tmp/image2.jpg", rotated)
+
+            # 加载图片
+            pixmap = QPixmap(r'img_tmp/image2.jpg')
+            # 将图片缩放到标签的大小，并保持图片的比例
+            pixmap = pixmap.scaled(self.label_2.width(), self.label_2.height(), QtCore.Qt.KeepAspectRatio)
+            # 在标签上显示图片
+            self.label_2.setPixmap(pixmap)
+
         except Exception as e:
+            self.warning_window = Warning()
+            self.warning_window.start()
             print("revole_2_ButtonClicked error:", e)
 
-        # 加载图片
-        pixmap = QPixmap(r'img_tmp/image2.jpg')
-        # 将图片缩放到标签的大小，并保持图片的比例
-        pixmap = pixmap.scaled(self.label_2.width(), self.label_2.height(), QtCore.Qt.KeepAspectRatio)
-        # 在标签上显示图片
-        self.label_2.setPixmap(pixmap)
+
 
 
 

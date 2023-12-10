@@ -17,14 +17,14 @@ import cv2
 class result_ui(QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(980, 840)
+        MainWindow.resize(870, 840)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
 
 
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(10, 10, 951, 481))
+        self.label.setGeometry(QtCore.QRect(10, 10, 850, 481))
         self.label.setStyleSheet("border-width: 1px;border-style: solid;border-color: rgb(255, 170, 0);")
         self.label.setObjectName("label")
 
@@ -149,7 +149,7 @@ class result_ui(QWidget):
 
 
     def on_value_changed_brightness(self, value):
-        print("brightness before:", value)
+        # print("brightness before:", value)
 
         self.value_brightness = value
         
@@ -175,7 +175,7 @@ class result_ui(QWidget):
 
     def on_value_changed_constract(self,value):
 
-        print("constract before:", value / 10)
+        # print("constract before:", value / 10)
 
         self.value_constract = value / 10
         
@@ -199,7 +199,7 @@ class result_ui(QWidget):
 
 
     def on_value_changed_exposure(self,value):
-        print("exposure before:", value / 10)
+        # print("exposure before:", value / 10)
 
         self.value_exposure = value / 10
         
@@ -225,7 +225,7 @@ class result_ui(QWidget):
 
     def on_value_changed_saturation(self,value):
         
-        print("saturation before:", value / 10)
+        # print("saturation before:", value / 10)
 
         self.value_saturation= value / 10
         
