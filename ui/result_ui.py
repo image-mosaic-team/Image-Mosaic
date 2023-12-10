@@ -6,6 +6,8 @@ from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtCore import Qt
 
 from ui_tools.enhance import enhance
+from ui.Warning import Warning
+
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
 import numpy as np
@@ -147,6 +149,7 @@ class result_ui(QWidget):
         self.value_exposure = 1
         self.value_saturation = 1
 
+        self.warning_window = None
 
     def on_value_changed_brightness(self, value):
         # print("brightness before:", value)
@@ -282,7 +285,13 @@ class result_ui(QWidget):
 
         # 如果用户选择了文件路径，则保存图片
         if image_save:
-            cv2.imwrite(image_save, self.image_modify_prosess)
+            try:
+                cv2.imwrite(image_save, self.image_modify_prosess)
+                print("result_crop_modify save sucessful")
+            except:
+                self.warning_window = Warning()
+                self.warning_window.start()
+                print("file name error")
 
 
     def EXITButtonClicked(self):
