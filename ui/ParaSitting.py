@@ -149,6 +149,8 @@ class ParaSitting(object):
         f2.write(b)
         f2.close()
 
+        print("para set successful")
+
 
     def EXButtonClicked(self):
         self.MainWindow.close()

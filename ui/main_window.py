@@ -31,14 +31,17 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QtCore.QRect(750, 630, 93, 28))
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(480, 280, 93, 28))
+        self.pushButton_3.setGeometry(QtCore.QRect(480, 220, 93, 28))
         self.pushButton_3.setObjectName("pushButton_3")
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(480, 370, 93, 28))
+        self.pushButton_4.setGeometry(QtCore.QRect(480, 310, 93, 28))
         self.pushButton_4.setObjectName("pushButton_4")
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_5.setGeometry(QtCore.QRect(480, 460, 93, 28))
+        self.pushButton_5.setGeometry(QtCore.QRect(480, 400, 93, 28))
         self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_9 = QtWidgets.QPushButton(self.centralwidget) # 
+        self.pushButton_9.setGeometry(QtCore.QRect(480, 480, 93, 28)) #
+        self.pushButton_9.setObjectName("pushButton_9") #
         self.lable1 = QtWidgets.QLabel(self.centralwidget)
         self.lable1.setGeometry(QtCore.QRect(10, 40, 441, 571))
         self.lable1.setStyleSheet("border-width: 1px;border-style: solid;border-color: rgb(255, 170, 0);")
@@ -84,6 +87,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", ""))
         self.pushButton_6.setText(_translate("MainWindow", "revole"))
         self.pushButton_8.setText(_translate("MainWindow", "revole"))
+        self.pushButton_9.setText(_translate("MainWindow", "exit"))
         # 为按钮添加槽函数
         self.pushButton.clicked.connect(self.upload1ButtonClicked)
         self.pushButton_2.clicked.connect(self.upload2ButtonClicked)
@@ -92,6 +96,7 @@ class Ui_MainWindow(object):
         self.pushButton_5.clicked.connect(self.moreButtonClicked)
         self.pushButton_6.clicked.connect(self.revole_1_ButtonClicked)
         self.pushButton_8.clicked.connect(self.revole_2_ButtonClicked)
+        self.pushButton_9.clicked.connect(self.clear_tmp)
 
     def upload1ButtonClicked(self):
         # pushButton 按钮的槽函数
@@ -225,13 +230,16 @@ class Ui_MainWindow(object):
             self.warning_window.start()
             print("revole_2_ButtonClicked error:", e)
 
+    def clear_tmp(self):
+        all_tmp_file = os.listdir("img_tmp")
+        if len(all_tmp_file) > 0:
+            for tmp_name in all_tmp_file:
+                os.remove(os.path.join("img_tmp", tmp_name))
+                print("delete successful: ", os.path.join("img_tmp", tmp_name))
 
+        self.MainWindow.close()
 
-
-
-app = QApplication(sys.argv)
-MainWindow = QMainWindow()
-ui = Ui_MainWindow()
-ui.setupUi(MainWindow)
-MainWindow.show()
-sys.exit(app.exec_())
+    def start(self):
+        self.MainWindow = QMainWindow()  # 使用self.MainWindow来保存QMainWindow的实例
+        self.setupUi(self.MainWindow)
+        self.MainWindow.show()

@@ -26,7 +26,7 @@ class Stitcher:
     开发备注：
         还是拼接后的黑色区域需要改善，之前想着自动去除黑色，但是仅限图像输入完整，如果过于奇怪则效果巨差。
         所以现在使用的是手动裁剪后保存（如果有更好的机器学习想法可以提出）
-        图像修复CSTGD感觉可以用，但是仅限机器学习的技术和实现复杂度就暂时不考虑）
+        图像修复CTSDG感觉可以用，但是仅限机器学习的技术和实现复杂度就暂时不考虑）
     """
     def __init__(self, path='algo_para.json'):
         algo_para_json = open(path,'r',encoding='utf-8')
@@ -93,7 +93,7 @@ class Stitcher:
 
         :param kspA、kspB : 这两个参数是从两个输入图像中检测到的关键点的坐标。这些关键点是使用SIFT描述符检测到的。
         :param featuresA、featuresB : 这两个参数是从两个输入图像中计算出的特征描述符。特征描述符是使用SIFT描述符计算出的，它们描述了关键点周围的图像区域的外观。
-        :param reatio : 参数是用于比值测试的阈值
+        :param reatio : 如果两个匹配都存在，并且第一个匹配的距离小于第二个匹配的距离乘以一个比率（这是一个阈值），那么认为这是一个好的匹配。
         :param reprojThresh : 用于计算单应性矩阵的RANSAC算法的阈值。
         :param Homography_matrix : 需要匹配点的个数大于这个值才算能拼接
         :return : 返回匹配的关键点、单应性矩阵和状态值

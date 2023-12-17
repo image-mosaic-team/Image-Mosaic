@@ -42,7 +42,7 @@ class More_Windows(object):
         self.pushButton.setText(_translate("MainWindow", "参数设置"))
         self.pushButton_2.setText(_translate("MainWindow", "制作人员"))
         self.label.setText(_translate("MainWindow", "版本：1.0"))
-        self.label_2.setText(_translate("MainWindow", "源码地址："))
+        self.label_2.setText(_translate("MainWindow", "源码地址：暂无开源"))
         # 为按钮添加槽函数
         self.pushButton.clicked.connect(self.PSsitButtonClicked)
         self.pushButton_2.clicked.connect(self.PPButtonClicked)

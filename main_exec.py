@@ -20,3 +20,12 @@ print(  ' ─────────▄─────────────�
 
 
 from ui import main_window
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
+
+app = QApplication(sys.argv)
+
+s = main_window.Ui_MainWindow()
+s.start()
+
+sys.exit(app.exec_())
